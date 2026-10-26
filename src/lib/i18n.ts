@@ -30,7 +30,22 @@ export const messages = {
   "Where would you like to go?": "Para onde você quer ir?",
   Clear: "Limpar",
   "My location": "Minha localização",
-  "Location detected: Main Gate (P1)": "Localização detectada: Portaria Principal (P1)",
+  "Finding your location…": "Buscando sua localização…",
+  "Your current location": "Sua localização atual",
+  "Coordinate map · no street basemap": "Mapa de coordenadas · sem mapa de ruas",
+  "Back to plant map": "Voltar ao mapa da fábrica",
+  Latitude: "Latitude",
+  Longitude: "Longitude",
+  "Accuracy: {meters} m": "Precisão: {meters} m",
+  "Location requires HTTPS or localhost.": "A localização requer HTTPS ou localhost.",
+  "Your browser does not support location services.":
+    "Seu navegador não oferece suporte a serviços de localização.",
+  "Location access denied. Allow location access in your browser and try again.":
+    "Acesso à localização negado. Permita o acesso à localização no navegador e tente novamente.",
+  "Location request timed out. Please try again.":
+    "O tempo de busca da localização esgotou. Tente novamente.",
+  "Unable to determine your location. Check your device's location services and try again.":
+    "Não foi possível determinar sua localização. Verifique os serviços de localização do dispositivo e tente novamente.",
   'No results for "{query}". Try a building number, name, or department.':
     'Nenhum resultado para "{query}". Tente o número, nome ou departamento de um prédio.',
   "View all buildings": "Ver todos os prédios",

@@ -7,6 +7,8 @@ import { fetchBuildings, getBuildingName, getBuildingDetails } from "@/lib/build
 import { SearchBar } from "@/components/SearchBar";
 import { TopBar } from "@/components/TopBar";
 import { PlantMap, type BuildingMarker } from "@/components/PlantMap";
+import { CurrentLocationMap } from "@/components/CurrentLocationMap";
+import { useCurrentLocation } from "@/hooks/use-current-location";
 import { BuildingDirectory } from "@/components/BuildingDirectory";
 import { Star, History, Zap } from "lucide-react";
 import type { BuildingRow } from "@/lib/types";
@@ -34,6 +36,7 @@ function Home() {
     queryFn: fetchBuildings,
   });
   const [focused, setFocused] = useState<BuildingMarker | null>(null);
+  const { location, locating, error: locationError, locate, clearLocation } = useCurrentLocation();
   const recentIds = useRecent();
   const [favorites] = useState<string[]>([]);
 
@@ -74,21 +77,51 @@ function Home() {
           </div>
         }
       >
-        <PlantMap
-          buildings={markers}
-          focusedBuilding={focused}
-          onDirections={(b) => {
-            const full = buildings.find((x) => x.id === b.id);
-            if (full) goTo(full);
-          }}
-        />
+        {location ? (
+          <CurrentLocationMap location={location} />
+        ) : (
+          <PlantMap
+            buildings={markers}
+            focusedBuilding={focused}
+            onDirections={(b) => {
+              const full = buildings.find((x) => x.id === b.id);
+              if (full) goTo(full);
+            }}
+          />
+        )}
       </ClientOnly>
+
+      {location && (
+        <div className="absolute left-3 top-24 z-[500] max-w-[calc(100%-1.5rem)] rounded-xl border border-border bg-card p-3 text-sm shadow-[var(--shadow-soft)] sm:left-4">
+          <div className="font-semibold">{t("Your current location")}</div>
+          <div className="text-xs text-muted-foreground">
+            {t("Coordinate map · no street basemap")}
+          </div>
+          <div>
+            {t("Latitude")}: {location.latitude.toFixed(6)}
+          </div>
+          <div>
+            {t("Longitude")}: {location.longitude.toFixed(6)}
+          </div>
+          <div>{t("Accuracy: {meters} m", { meters: Math.round(location.accuracy) })}</div>
+          <button
+            type="button"
+            onClick={clearLocation}
+            className="mt-2 rounded-lg border border-border px-3 py-1.5 font-medium hover:bg-accent"
+          >
+            {t("Back to plant map")}
+          </button>
+        </div>
+      )}
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[500] flex justify-center px-3 pb-4 sm:pb-6">
         <div className="pointer-events-auto w-full max-w-2xl space-y-3">
           <SearchBar
             buildings={buildings}
             loading={isLoading}
+            onUseLocation={locate}
+            locating={locating}
+            locationError={locationError ? t(locationError) : undefined}
             onSelect={(b) =>
               setFocused({
                 id: b.id,

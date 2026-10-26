@@ -6,16 +6,24 @@ import type { BuildingRow } from "@/lib/types";
 import { getBuildingName, getDepartmentName, searchBuildings } from "@/lib/buildings";
 import { getCategoryLabel } from "@/lib/plant";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 interface SearchBarProps {
   buildings: BuildingRow[];
   loading?: boolean;
   onSelect: (b: BuildingRow) => void;
-  onUseLocation?: () => void;
+  onUseLocation: () => void;
+  locating?: boolean;
+  locationError?: string;
 }
 
-export function SearchBar({ buildings, loading, onSelect, onUseLocation }: SearchBarProps) {
+export function SearchBar({
+  buildings,
+  loading,
+  onSelect,
+  onUseLocation,
+  locating,
+  locationError,
+}: SearchBarProps) {
   const { language, t } = useLanguage();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
@@ -41,11 +49,6 @@ export function SearchBar({ buildings, loading, onSelect, onUseLocation }: Searc
     onSelect(b);
     router.navigate({ to: "/nav/$destId", params: { destId: b.id } });
   }
-
-  const useLoc = () => {
-    if (onUseLocation) return onUseLocation();
-    toast.success(t("Location detected: Main Gate (P1)"));
-  };
 
   return (
     <div ref={containerRef} className="relative">
@@ -75,12 +78,31 @@ export function SearchBar({ buildings, loading, onSelect, onUseLocation }: Searc
 
       <div className="mt-2 flex gap-2">
         <button
-          onClick={useLoc}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-card border border-border/70 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-soft)] hover:bg-accent transition"
+          type="button"
+          onClick={onUseLocation}
+          disabled={locating}
+          aria-busy={locating}
+          aria-label={locating ? t("Finding your location…") : t("My location")}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-card border border-border/70 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-soft)] hover:bg-accent transition disabled:cursor-wait disabled:opacity-70"
         >
-          <MapPin className="h-4 w-4 text-[var(--mb-blue)]" /> {t("My location")}
+          {locating ? (
+            <Loader2 className="h-4 w-4 animate-spin text-[var(--mb-blue)]" />
+          ) : (
+            <MapPin className="h-4 w-4 text-[var(--mb-blue)]" />
+          )}
+          <span aria-live="polite">
+            {locating ? t("Finding your location…") : t("My location")}
+          </span>
         </button>
       </div>
+      {locationError && (
+        <p
+          role="alert"
+          className="mt-2 rounded-xl border border-destructive/30 bg-card p-3 text-sm text-destructive"
+        >
+          {locationError}
+        </p>
+      )}
 
       {open && q && results.length > 0 && (
         <div className="absolute inset-x-0 top-full mt-2 rounded-2xl bg-popover border border-border/70 shadow-[var(--shadow-elegant)] max-h-80 overflow-y-auto z-[600]">

@@ -66,6 +66,13 @@ dictionary. Unrecognized free text is preserved rather than guessed.
 
 ## Routes and refresh
 
+**My location** requests a fresh, high-accuracy browser location fix when clicked.
+Allow location access and use HTTPS (or localhost). The local coordinate map shows
+the returned latitude/longitude, a marker, and the reported accuracy radius. It
+loads no external map tiles and does not store or send these coordinates to the
+backend. **Back to plant map** returns to the factory drawing. That drawing has
+no GPS calibration, so geographic coordinates are not projected onto it.
+
 | URL fragment    | Access | Purpose                                  |
 | --------------- | ------ | ---------------------------------------- |
 | `#/`            | Public | Plant map, directory, quick destinations |
