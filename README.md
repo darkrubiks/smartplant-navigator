@@ -5,7 +5,7 @@ map, routes for walking/car/truck/forklift, supplier check-in, account access,
 operations dashboard, and marker administration. The existing UI, street graph,
 map, building catalog integration, and Supabase row-level policies are preserved.
 
-Source: https://github.com/darkrubiks/smartplant-navigator (private, branch `main`).
+Source: https://github.com/darkrubiks/smartplant-navigator (public, branch `main`).
 
 ## Architecture
 
@@ -106,20 +106,19 @@ In repository Settings > Secrets and variables > Actions, set these **variables*
 `VITE_AI_ENDPOINT`. These values are public browser configuration. The workflow
 calculates `/<repository>/` automatically; set `VITE_BASE_PATH` only to override it.
 
-The source must stay **private**. GitHub Pages from private personal repositories
-requires a supporting GitHub plan (such as Pro). The current token does not expose
-the plan, so eligibility remains unverified and deployment is gated. After
-confirming eligibility, enable Settings > Pages > Source: GitHub Actions, then set
-repository variable `PAGES_ENABLED=true` and dispatch the workflow (or push).
-A private source repository does not make the published website private. Consult
+The owner chose to make this repository **public** to use Pages with the verified
+GitHub Free account. Pages is configured to deploy through GitHub Actions, with
+repository variable `PAGES_ENABLED=true`. Each push to `main` validates and deploys
+the app; manual workflow dispatch is also available. Both the source and the
+published website are public. Consult
 https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages.
 
-Expected URL, **only after a verified successful deployment**:
+Production URL:
 `https://darkrubiks.github.io/smartplant-navigator/`.
 
-If the plan does not support private Pages, keep this repository private. Options
-are an existing authorized static host that can build private repositories, or
-upgrading the GitHub plan. No alternate provider or paid plan is provisioned here.
+If source privacy is needed later, GitHub Pages from a private personal repository
+requires a supporting plan such as Pro. Review hosting before changing visibility.
+No alternate provider or paid plan is provisioned here.
 
 ## Troubleshooting
 
@@ -131,9 +130,9 @@ upgrading the GitHub plan. No alternate provider or paid plan is provisioned her
 - Assistant says unconfigured: deploy an authorized independent backend and set
   `VITE_AI_ENDPOINT`; do not embed provider credentials. This was deferred by request.
 - Missing map or assets: verify the trailing slash in `VITE_BASE_PATH` and rebuild.
-- Pages job skipped: confirm plan support, enable Pages and set `PAGES_ENABLED=true`.
-- Pages errors on a private Free account: preserve visibility and choose an approved
-  alternative hosting strategy or plan. Never change visibility to make deployment pass.
+- Pages job skipped: enable Pages and set `PAGES_ENABLED=true`.
+- Pages errors after changing to a private repository: check plan eligibility and
+  choose an appropriate plan or hosting strategy before publishing again.
 
 ## Local migration archive
 
