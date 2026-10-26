@@ -5,7 +5,6 @@ import type { BuildingRow } from "@/lib/types";
 import { getBuildingName, getDepartmentName, searchBuildings } from "@/lib/buildings";
 import { CATEGORY_LABEL } from "@/lib/plant";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 interface SearchBarProps {
@@ -27,7 +26,6 @@ export function SearchBar({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const results = useMemo(() => searchBuildings(buildings, q, 8), [buildings, q]);
-  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -40,7 +38,6 @@ export function SearchBar({
 
   function selectResult(b: BuildingRow) {
     void supabase.from("search_logs").insert({
-      user_id: user?.id ?? null,
       query: q,
       result_building_id: b.id,
     });
@@ -132,7 +129,7 @@ export function SearchBar({
       )}
       {open && q && results.length === 0 && !loading && (
         <div className="absolute inset-x-0 top-full mt-2 rounded-2xl bg-popover border border-border/70 shadow-[var(--shadow-soft)] p-4 text-sm text-muted-foreground z-[600]">
-          No results for "{q}". Try the AI assistant in the bottom corner.
+          No results for "{q}". Try a building number, name, or department.
         </div>
       )}
     </div>

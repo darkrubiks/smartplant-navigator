@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchBuildings, getBuildingName } from "@/lib/buildings";
 import { PlantMap, type BuildingMarker } from "@/components/PlantMap";
 import { TopBar } from "@/components/TopBar";
-import { AiAssistant } from "@/components/AiAssistant";
 import {
   bearingBetween,
   buildSteps,
@@ -22,7 +21,6 @@ import {
 import { CATEGORY_LABEL, MODE_LABEL, type TransportMode } from "@/lib/plant";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -60,7 +58,6 @@ const OFF_ROUTE_PX = 45;
 
 function NavPage() {
   const { destId } = Route.useParams();
-  const { user } = useAuth();
   const { data: buildings = [] } = useQuery({
     queryKey: ["buildings"],
     queryFn: fetchBuildings,
@@ -194,7 +191,6 @@ function NavPage() {
   async function confirmArrival() {
     if (!destination) return;
     await supabase.from("arrivals").insert({
-      user_id: user?.id ?? null,
       building_id: destination.id,
       source: "web",
     });
@@ -407,12 +403,6 @@ function NavPage() {
           )}
         </div>
       </aside>
-
-      <AiAssistant
-        buildings={buildings}
-        currentDestinationId={destination.id}
-        currentOriginLabel={`${origin.number} - ${getBuildingName(origin)}`}
-      />
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { ClientOnly } from "@tanstack/react-router";
 import { fetchBuildings, getBuildingName } from "@/lib/buildings";
 import { SearchBar } from "@/components/SearchBar";
 import { TopBar } from "@/components/TopBar";
-import { AiAssistant } from "@/components/AiAssistant";
 import { PlantMap, type BuildingMarker } from "@/components/PlantMap";
 import { BuildingDirectory } from "@/components/BuildingDirectory";
 import { Star, History, Zap } from "lucide-react";
@@ -151,8 +150,6 @@ function Home() {
           </div>
         </div>
       </div>
-
-      <AiAssistant buildings={buildings} />
     </div>
   );
 }

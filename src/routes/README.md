@@ -5,20 +5,20 @@ defines a route. Do **not** create `src/pages/`, `src/routes/_app/index.tsx`, or
 `app/layout.tsx` — those are Next.js / Remix conventions. The only root layout
 is `src/routes/__root.tsx`.
 
-The static app uses hash history. A route such as `/auth` is served at
-`/<repository>/#/auth`, so refresh works on GitHub Pages without server rewrites.
+The static app uses hash history. A route such as `/nav/:destId` is served at
+`/<repository>/#/nav/:destId`, so refresh works on GitHub Pages without server rewrites.
 
 ## Conventions
 
-| File | URL |
-| --- | --- |
-| `index.tsx` | `/` |
-| `about.tsx` | `/about` |
-| `users/index.tsx` | `/users` |
-| `users/$id.tsx` | `/users/:id` (dynamic — bare `$`, no curly braces) |
-| `posts/{-$category}.tsx` | `/posts/:category?` (optional segment) |
-| `files/$.tsx` | `/files/*` (splat — read via `_splat` param, never `*`) |
-| `_layout.tsx` | layout route (renders children via `<Outlet />`) |
-| `__root.tsx` | app shell — wraps every page; preserve `<Outlet />` |
+| File                     | URL                                                     |
+| ------------------------ | ------------------------------------------------------- |
+| `index.tsx`              | `/`                                                     |
+| `about.tsx`              | `/about`                                                |
+| `users/index.tsx`        | `/users`                                                |
+| `users/$id.tsx`          | `/users/:id` (dynamic — bare `$`, no curly braces)      |
+| `posts/{-$category}.tsx` | `/posts/:category?` (optional segment)                  |
+| `files/$.tsx`            | `/files/*` (splat — read via `_splat` param, never `*`) |
+| `_layout.tsx`            | layout route (renders children via `<Outlet />`)        |
+| `__root.tsx`             | app shell — wraps every page; preserve `<Outlet />`     |
 
 `routeTree.gen.ts` is auto-generated. Don't edit it by hand.

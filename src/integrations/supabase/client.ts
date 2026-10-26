@@ -50,13 +50,8 @@ function createSupabaseClient() {
     global: {
       fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
     },
-    auth: {
-      flowType: "pkce",
-      detectSessionInUrl: true,
-      storage: typeof window !== "undefined" ? localStorage : undefined,
-      persistSession: true,
-      autoRefreshToken: true,
-    },
+    // Public database access only; do not initialize Auth or reuse stored sessions.
+    accessToken: async () => null,
   });
 }
 
