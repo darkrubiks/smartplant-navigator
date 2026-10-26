@@ -4,7 +4,7 @@ import type { BuildingRow } from "@/lib/types";
 import { getLanguage, type Language } from "./i18n";
 import { translateCatalogText, normalizeSearch, formatHours } from "./catalog-translations";
 
-const REMOVED_BUILDING_NUMBERS = new Set(["79-14", "79-33", "148"]);
+const REMOVED_BUILDING_NUMBERS = new Set(["66", "79", "79-14", "79-33", "80", "141", "148"]);
 
 export async function fetchBuildings(): Promise<BuildingRow[]> {
   const { data, error } = await supabase.from("buildings").select("*").order("number");
