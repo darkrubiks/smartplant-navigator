@@ -19,8 +19,8 @@ export const messages = {
     "Não foi possível iniciar o SmartPlant Navigator. Verifique a configuração do aplicativo e atualize a página.",
   "Mercedes SmartPlant Navigator — São Bernardo plant map":
     "Mercedes SmartPlant Navigator — Mapa da fábrica de São Bernardo",
-  "Plant map, route guidance, and supplier check-in for São Bernardo do Campo.":
-    "Mapa da fábrica, orientação de rotas e registro de chegada de fornecedores em São Bernardo do Campo.",
+  "Plant map and route guidance for São Bernardo do Campo.":
+    "Mapa da fábrica e orientação de rotas em São Bernardo do Campo.",
   "Loading map…": "Carregando mapa…",
   "Loading buildings…": "Carregando prédios…",
   "Loading destination…": "Carregando destino…",
@@ -30,9 +30,6 @@ export const messages = {
   "Where would you like to go?": "Para onde você quer ir?",
   Clear: "Limpar",
   "My location": "Minha localização",
-  "Scan QR Code": "Ler QR Code",
-  "Paste the QR Code token (use MB-DEMO-MOTOR-001 or MB-DEMO-CHASSI-002 for the demo)":
-    "Cole o código do QR Code (use MB-DEMO-MOTOR-001 ou MB-DEMO-CHASSI-002 para a demonstração)",
   "Location detected: Main Gate (P1)": "Localização detectada: Portaria Principal (P1)",
   'No results for "{query}". Try a building number, name, or department.':
     'Nenhum resultado para "{query}". Tente o número, nome ou departamento de um prédio.',
@@ -84,23 +81,6 @@ export const messages = {
   "Turn left": "Vire à esquerda",
   "Welcome to Building {number} — {name}. Please wait for unloading authorization, if applicable.":
     "Bem-vindo ao Prédio {number} — {name}. Aguarde a autorização para descarregar, se necessário.",
-  "Invalid or expired QR Code.": "QR Code inválido ou expirado.",
-  "This access has expired. Request a new QR Code at the gate.":
-    "Este acesso expirou. Solicite um novo QR Code na portaria.",
-  "No destination is configured for this token.":
-    "Nenhum destino foi configurado para este código.",
-  "Supplier Check-in": "Registro de chegada de fornecedores",
-  "Temporary access": "Acesso temporário",
-  Welcome: "Boas-vindas",
-  Delivery: "Entrega",
-  "No description": "Sem descrição",
-  Destination: "Destino",
-  "Start navigation": "Iniciar navegação",
-  "Building {number} — {name}": "Prédio {number} — {name}",
-  "Entry gate": "Portaria de entrada",
-  "Valid until": "Válido até",
-  "Hello, {name}! Your destination is {destination}. The route is ready for you.":
-    "Olá, {name}! Seu destino é {destination}. A rota está pronta para você.",
   "Zoom in": "Aproximar",
   "Zoom out": "Afastar",
   "Map marker": "Marcador do mapa",

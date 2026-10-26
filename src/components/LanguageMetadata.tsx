@@ -9,10 +9,7 @@ export function LanguageMetadata() {
     document
       .querySelectorAll('meta[name="description"], meta[property="og:description"]')
       .forEach((meta) => {
-        meta.setAttribute(
-          "content",
-          t("Plant map, route guidance, and supplier check-in for São Bernardo do Campo."),
-        );
+        meta.setAttribute("content", t("Plant map and route guidance for São Bernardo do Campo."));
       });
   }, [language, t]);
   return null;

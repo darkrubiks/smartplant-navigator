@@ -1,7 +1,7 @@
 # Mercedes SmartPlant Navigator
 
 Independent plant navigator for Mercedes-Benz São Bernardo do Campo: searchable
-map, routes for walking/car/truck/forklift, and supplier check-in.
+map and routes for walking/car/truck/forklift.
 The UI, street graph,
 map, building catalog integration, and Supabase row-level policies are preserved.
 
@@ -43,14 +43,13 @@ The original Supabase project is still referenced in `supabase/config.toml`.
 No database was copied, reset, or migrated remotely. For a new independently
 managed Supabase project, review the included schema/RLS migrations, link it with
 the Supabase CLI, then run `supabase db push` and update the public environment
-variables. Existing demo supplier tokens have expiration dates and may need
-replacement by a backend administrator. Do not reset production data. The
+variables. Do not reset production data. The
 account pages and in-app administration have been removed; existing database
 policies and historical migrations remain in place.
 
 ## Languages
 
-Use the **EN / PT-BR** switch on the map, navigation, supplier check-in, or building
+Use the **EN / PT-BR** switch on the map, navigation, or building
 directory. The first visit follows the browser language; an explicit choice is
 saved locally and synchronized across tabs. Switching languages keeps the current
 route and navigation state.
@@ -67,14 +66,13 @@ dictionary. Unrecognized free text is preserved rather than guessed.
 
 ## Routes and refresh
 
-| URL fragment       | Access | Purpose                                  |
-| ------------------ | ------ | ---------------------------------------- |
-| `#/`               | Public | Plant map, directory, quick destinations |
-| `#/nav/:destId`    | Public | Route guidance and simulation            |
-| `#/checkin/:token` | Public | Supplier delivery check-in               |
+| URL fragment    | Access | Purpose                                  |
+| --------------- | ------ | ---------------------------------------- |
+| `#/`            | Public | Plant map, directory, quick destinations |
+| `#/nav/:destId` | Public | Route guidance and simulation            |
 
 Database RLS still limits administrative writes to the `admin` role. Hash routing lets
-shared URLs and browser refresh work on static hosting. Supplier links must
+shared URLs and browser refresh work on static hosting. Shared links must
 include both the repository base path and the hash. Old clean
 URLs such as `/nav/id` are not automatically redirected by GitHub Pages; distribute
 the new hash URLs. The map and all public assets respect the configured base path.

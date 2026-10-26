@@ -1,6 +1,6 @@
 import { useLanguage } from "@/hooks/use-language";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search, MapPin, QrCode, X, Loader2 } from "lucide-react";
+import { Search, MapPin, X, Loader2 } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
 import type { BuildingRow } from "@/lib/types";
 import { getBuildingName, getDepartmentName, searchBuildings } from "@/lib/buildings";
@@ -12,17 +12,10 @@ interface SearchBarProps {
   buildings: BuildingRow[];
   loading?: boolean;
   onSelect: (b: BuildingRow) => void;
-  onScanQR?: () => void;
   onUseLocation?: () => void;
 }
 
-export function SearchBar({
-  buildings,
-  loading,
-  onSelect,
-  onScanQR,
-  onUseLocation,
-}: SearchBarProps) {
+export function SearchBar({ buildings, loading, onSelect, onUseLocation }: SearchBarProps) {
   const { language, t } = useLanguage();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
@@ -48,15 +41,6 @@ export function SearchBar({
     onSelect(b);
     router.navigate({ to: "/nav/$destId", params: { destId: b.id } });
   }
-
-  const scanQR = () => {
-    if (onScanQR) return onScanQR();
-    const demo = window.prompt(
-      t("Paste the QR Code token (use MB-DEMO-MOTOR-001 or MB-DEMO-CHASSI-002 for the demo)"),
-      "MB-DEMO-MOTOR-001",
-    );
-    if (demo) router.navigate({ to: "/checkin/$token", params: { token: demo.trim() } });
-  };
 
   const useLoc = () => {
     if (onUseLocation) return onUseLocation();
@@ -95,12 +79,6 @@ export function SearchBar({
           className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-card border border-border/70 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-soft)] hover:bg-accent transition"
         >
           <MapPin className="h-4 w-4 text-[var(--mb-blue)]" /> {t("My location")}
-        </button>
-        <button
-          onClick={scanQR}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl text-white py-2 text-sm font-medium shadow-[var(--shadow-elegant)] bg-[var(--mb-blue)] hover:bg-[var(--mb-blue-dark)] transition"
-        >
-          <QrCode className="h-4 w-4" /> {t("Scan QR Code")}
         </button>
       </div>
 

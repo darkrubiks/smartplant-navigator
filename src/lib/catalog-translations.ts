@@ -106,8 +106,6 @@ export const catalogTranslations: ReadonlyArray<readonly [string, string]> = [
   ["Chefe da Ferramentaria", "Tooling manager"],
   ["Chefe da PT", "Paint preparation manager"],
   ["Frentista", "Fuel attendant"],
-  ["Entrega de motor completo", "Complete engine delivery"],
-  ["Entrega de componentes de chassis", "Chassis component delivery"],
 ];
 
 export const normalizeSearch = (value: string) =>

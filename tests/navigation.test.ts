@@ -129,8 +129,8 @@ test("every translation preserves placeholders and interpolates without modifyin
     assert.deepEqual(placeholders(english), placeholders(String(portuguese)), english);
   }
   assert.equal(
-    translate("Building {number} — {name}", { number: 39, name: "João $&" }, "pt-BR"),
-    "Prédio 39 — João $&",
+    translate("{name} — Building {number}", { number: 39, name: "João $&" }, "pt-BR"),
+    "João $& — Prédio 39",
   );
 });
 
