@@ -2,6 +2,7 @@
 // Origins and destinations are projected onto routable street segments before
 // Dijkstra runs, so the rendered path never draws straight shortcuts through
 // building footprints.
+import { translate, getLanguage, getLocale, type Language } from "./i18n";
 
 import {
   EDGES,
@@ -215,14 +216,14 @@ export function formatEta(sec: number) {
   return `${h}h ${rem}m`;
 }
 
-export function formatDistance(meters: number) {
-  if (meters < 1000) return `${meters} m`;
-  return `${(meters / 1000).toFixed(2)} km`;
+export function formatDistance(meters: number, language: Language = getLanguage()) {
+  if (meters < 1000) return `${new Intl.NumberFormat(getLocale(language)).format(meters)} m`;
+  return `${new Intl.NumberFormat(getLocale(language), { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(meters / 1000)} km`;
 }
 
-export function formatArrival(sec: number) {
+export function formatArrival(sec: number, language: Language = getLanguage()) {
   const d = new Date(Date.now() + sec * 1000);
-  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return d.toLocaleTimeString(getLocale(language), { hour: "numeric", minute: "2-digit" });
 }
 
 // Turn-by-turn instructions derived from bearing changes.
@@ -236,7 +237,7 @@ export type Step = {
 
 const bearingDeg = (a: Point, b: Point) => (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
 
-export function buildSteps(path: Point[]): Step[] {
+export function buildSteps(path: Point[], language: Language = getLanguage()): Step[] {
   if (path.length < 2) return [];
   const steps: Step[] = [];
   let lastIdx = 0;
@@ -254,7 +255,7 @@ export function buildSteps(path: Point[]): Step[] {
     lastIdx = idx;
   };
 
-  push("straight", "Continue straight", 0);
+  push("straight", translate("Continue straight", {}, language), 0);
   for (let i = 1; i < path.length - 1; i++) {
     const incoming = bearingDeg(path[i - 1], path[i]);
     const outgoing = bearingDeg(path[i], path[i + 1]);
@@ -264,9 +265,9 @@ export function buildSteps(path: Point[]): Step[] {
     if (Math.abs(difference) < 25) continue;
     // Map y increases downward, so a positive delta is a right turn.
     const turn: Turn = difference > 0 ? "right" : "left";
-    push(turn, turn === "right" ? "Turn right" : "Turn left", i);
+    push(turn, translate(turn === "right" ? "Turn right" : "Turn left", {}, language), i);
   }
-  push("arrive", "You have arrived at your destination", path.length - 1);
+  push("arrive", translate("You have arrived at your destination", {}, language), path.length - 1);
   return steps;
 }
 

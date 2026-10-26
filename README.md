@@ -48,6 +48,23 @@ replacement by a backend administrator. Do not reset production data. The
 account pages and in-app administration have been removed; existing database
 policies and historical migrations remain in place.
 
+## Languages
+
+Use the **EN / PT-BR** switch on the map, navigation, supplier check-in, or building
+directory. The first visit follows the browser language; an explicit choice is
+saved locally and synchronized across tabs. Switching languages keeps the current
+route and navigation state.
+
+Interface messages, accessibility labels, directions, catalog descriptions and
+department labels support English and Brazilian Portuguese. Search accepts both
+languages and ignores accents. Dates, times and decimal separators follow the
+selected language. Proper names and the original printed map image stay as provided.
+
+Messages live in `src/lib/i18n.ts`; known catalog phrases live in
+`src/lib/catalog-translations.ts`. New backend descriptions can provide
+`description_en` / `description_pt` fields, or add their phrases to the catalog
+dictionary. Unrecognized free text is preserved rather than guessed.
+
 ## Routes and refresh
 
 | URL fragment       | Access | Purpose                                  |

@@ -1,8 +1,9 @@
+import { useLanguage } from "@/hooks/use-language";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ClientOnly } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { fetchBuildings, getBuildingName } from "@/lib/buildings";
+import { fetchBuildings, getBuildingName, getBuildingDetails } from "@/lib/buildings";
 import { PlantMap, type BuildingMarker } from "@/components/PlantMap";
 import { TopBar } from "@/components/TopBar";
 import {
@@ -18,7 +19,7 @@ import {
   type Point,
   type Step,
 } from "@/lib/routing";
-import { CATEGORY_LABEL, MODE_LABEL, type TransportMode } from "@/lib/plant";
+import { getCategoryLabel, getModeLabel, type TransportMode } from "@/lib/plant";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -57,6 +58,7 @@ const OFF_ROUTE_METERS = 25; // pixels ≈ 40 crop-px; converted below
 const OFF_ROUTE_PX = 45;
 
 function NavPage() {
+  const { language, t } = useLanguage();
   const { destId } = Route.useParams();
   const { data: buildings = [] } = useQuery({
     queryKey: ["buildings"],
@@ -93,7 +95,10 @@ function NavPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routeOrigin?.x, routeOrigin?.y, destination?.id, mode, recalcKey]);
 
-  const steps: Step[] = useMemo(() => (route ? buildSteps(route.path) : []), [route]);
+  const steps: Step[] = useMemo(
+    () => (route ? buildSteps(route.path, language) : []),
+    [route, language],
+  );
 
   // Position on route + next-turn calculation
   const nav = useMemo(() => {
@@ -131,7 +136,7 @@ function NavPage() {
   useEffect(() => {
     if (!nav || !userPos) return;
     if (nav.offRoutePx > OFF_ROUTE_PX) {
-      setRecalcMsg("Recalculating route…");
+      setRecalcMsg("recalculating");
       const t = setTimeout(() => {
         setRecalcKey((k) => k + 1);
         setRecalcMsg(null);
@@ -196,7 +201,7 @@ function NavPage() {
     });
     setArrived(true);
     setSimulating(false);
-    toast.success("Arrival recorded!");
+    toast.success(t("Arrival recorded!"));
   }
 
   // Auto-arrival when very close to destination
@@ -205,14 +210,14 @@ function NavPage() {
     if (nav.remaining < 10) {
       setArrived(true);
       setSimulating(false);
-      toast.success("You have arrived at your destination!");
+      toast.success(t("You have arrived at your destination!"));
     }
-  }, [nav?.remaining, destination, arrived]);
+  }, [nav?.remaining, destination, arrived, t]);
 
   if (!destination || !origin) {
     return (
       <div className="grid h-screen place-items-center">
-        <div className="text-muted-foreground text-sm">Loading destination…</div>
+        <div className="text-muted-foreground text-sm">{t("Loading destination…")}</div>
       </div>
     );
   }
@@ -224,12 +229,8 @@ function NavPage() {
     category: b.category,
     x: b.x,
     y: b.y,
-    description: b.description,
-    department: b.department,
-    responsible: b.responsible,
     phone: b.phone,
-    hours: b.hours,
-    dock: b.dock,
+    ...getBuildingDetails(b, language),
   }));
 
   const displayStep = nav?.upcomingTurn ?? steps[0];
@@ -245,7 +246,7 @@ function NavPage() {
         <ClientOnly
           fallback={
             <div className="grid h-full place-items-center text-sm text-muted-foreground">
-              Loading map…
+              {t("Loading map…")}
             </div>
           }
         >
@@ -270,24 +271,24 @@ function NavPage() {
           <TurnGlyph turn={displayStep?.turn ?? "straight"} />
           <div className="min-w-0 flex-1">
             <div className="text-2xl font-bold leading-none">
-              {distanceToTurn > 0 ? `${distanceToTurn} m` : "Now"}
+              {distanceToTurn > 0 ? formatDistance(distanceToTurn) : t("Now")}
             </div>
             <div className="text-sm opacity-90 truncate">
-              {displayStep?.text ?? "Calculating route…"}
+              {displayStep?.text ?? t("Calculating route…")}
             </div>
           </div>
           <button
             onClick={centerOnUser}
             className="rounded-full bg-white/15 p-2 hover:bg-white/25"
-            aria-label="Center on user"
-            title="Center"
+            aria-label={t("Center on user")}
+            title={t("Center")}
           >
             <Crosshair className="h-4 w-4" />
           </button>
         </div>
         {recalcMsg && (
           <div className="pointer-events-none absolute -bottom-8 rounded-full bg-black/70 px-3 py-1 text-xs text-white">
-            {recalcMsg}
+            {t("Recalculating route…")}
           </div>
         )}
       </div>
@@ -300,7 +301,7 @@ function NavPage() {
           ) : (
             <>
               <div className="flex items-center gap-3 border-b border-border p-3">
-                <Link to="/" className="rounded-full p-2 hover:bg-accent" aria-label="Back">
+                <Link to="/" className="rounded-full p-2 hover:bg-accent" aria-label={t("Back")}>
                   <ArrowLeft className="h-4 w-4" />
                 </Link>
                 <span
@@ -311,7 +312,7 @@ function NavPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {CATEGORY_LABEL[destination.category]}
+                    {getCategoryLabel(destination.category)}
                   </div>
                   <div className="text-sm font-semibold leading-tight truncate">
                     {getBuildingName(destination)}
@@ -321,14 +322,14 @@ function NavPage() {
                   onClick={() => setExpanded((v) => !v)}
                   className="rounded-md border border-border px-2 py-1 text-xs hover:bg-accent"
                 >
-                  {expanded ? "Less" : "More"}
+                  {expanded ? t("Less") : t("More")}
                 </button>
               </div>
 
               <div className="grid grid-cols-3 gap-2 border-b border-border p-3">
-                <Stat label="Distance" value={formatDistance(remaining)} emphasis />
-                <Stat label="Time" value={formatEta(remainingSec)} />
-                <Stat label="Arrival" value={formatArrival(remainingSec)} />
+                <Stat label={t("Distance")} value={formatDistance(remaining)} emphasis />
+                <Stat label={t("Time")} value={formatEta(remainingSec)} />
+                <Stat label={t("Arrival")} value={formatArrival(remainingSec)} />
               </div>
 
               <div className="flex flex-wrap items-center gap-1.5 border-b border-border bg-secondary/40 p-3">
@@ -348,7 +349,7 @@ function NavPage() {
                       } ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
                     >
                       <Icon className="h-3.5 w-3.5" />
-                      {MODE_LABEL[m]}
+                      {getModeLabel(m)}
                     </button>
                   );
                 })}
@@ -363,7 +364,9 @@ function NavPage() {
                         <div className="flex-1">
                           <div>{s.text}</div>
                           {s.distanceM > 0 && (
-                            <div className="text-xs text-muted-foreground">{s.distanceM} m</div>
+                            <div className="text-xs text-muted-foreground">
+                              {formatDistance(s.distanceM)}
+                            </div>
                           )}
                         </div>
                       </li>
@@ -374,18 +377,18 @@ function NavPage() {
 
               <div className="flex flex-wrap gap-2 p-3">
                 <Button variant="outline" size="sm" onClick={() => setRecalcKey((k) => k + 1)}>
-                  <RefreshCcw className="mr-1 h-4 w-4" /> Recalculate
+                  <RefreshCcw className="mr-1 h-4 w-4" /> {t("Recalculate")}
                 </Button>
                 <Button variant="outline" size="sm" onClick={centerOnUser}>
-                  <Crosshair className="mr-1 h-4 w-4" /> Center
+                  <Crosshair className="mr-1 h-4 w-4" /> {t("Center")}
                 </Button>
                 {simulating ? (
                   <Button variant="outline" size="sm" onClick={() => setSimulating(false)}>
-                    <Pause className="mr-1 h-4 w-4" /> Pause
+                    <Pause className="mr-1 h-4 w-4" /> {t("Pause")}
                   </Button>
                 ) : (
                   <Button variant="outline" size="sm" onClick={startSimulation}>
-                    <Play className="mr-1 h-4 w-4" /> Simulate route
+                    <Play className="mr-1 h-4 w-4" /> {t("Simulate route")}
                   </Button>
                 )}
                 <Button
@@ -393,10 +396,10 @@ function NavPage() {
                   onClick={confirmArrival}
                   className="ml-auto bg-[var(--mb-blue)] hover:bg-[var(--mb-blue-dark)] text-white"
                 >
-                  <CheckCircle2 className="mr-1 h-4 w-4" /> Confirm arrival
+                  <CheckCircle2 className="mr-1 h-4 w-4" /> {t("Confirm arrival")}
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => window.history.back()}>
-                  <X className="mr-1 h-4 w-4" /> End
+                  <X className="mr-1 h-4 w-4" /> {t("End")}
                 </Button>
               </div>
             </>
@@ -451,15 +454,18 @@ function StepGlyph({ turn }: { turn: Step["turn"] }) {
 }
 
 function ArrivalCard({ building, onBack }: { building: BuildingRow; onBack: () => void }) {
+  const { language, t } = useLanguage();
   return (
     <div className="p-5 text-sm">
       <div className="mb-2 flex items-center gap-2 text-green-700 dark:text-green-300">
         <CheckCircle2 className="h-6 w-6" />
-        <div className="text-base font-semibold">You have arrived at your destination</div>
+        <div className="text-base font-semibold">{t("You have arrived at your destination")}</div>
       </div>
       <p className="text-muted-foreground">
-        Welcome to Building {building.number} — {getBuildingName(building)}. Please wait for
-        unloading authorization, if applicable.
+        {t(
+          "Welcome to Building {number} — {name}. Please wait for unloading authorization, if applicable.",
+          { number: building.number, name: getBuildingName(building) },
+        )}
       </p>
       {building.phone && (
         <a
@@ -471,7 +477,7 @@ function ArrivalCard({ building, onBack }: { building: BuildingRow; onBack: () =
       )}
       <div className="mt-4 flex justify-end">
         <Button onClick={onBack} variant="outline">
-          Back to map
+          {t("Back to map")}
         </Button>
       </div>
     </div>

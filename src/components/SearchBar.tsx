@@ -1,9 +1,10 @@
+import { useLanguage } from "@/hooks/use-language";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, MapPin, QrCode, X, Loader2 } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
 import type { BuildingRow } from "@/lib/types";
 import { getBuildingName, getDepartmentName, searchBuildings } from "@/lib/buildings";
-import { CATEGORY_LABEL } from "@/lib/plant";
+import { getCategoryLabel } from "@/lib/plant";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -22,6 +23,7 @@ export function SearchBar({
   onScanQR,
   onUseLocation,
 }: SearchBarProps) {
+  const { language, t } = useLanguage();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,7 +52,7 @@ export function SearchBar({
   const scanQR = () => {
     if (onScanQR) return onScanQR();
     const demo = window.prompt(
-      "Paste the QR Code token (use MB-DEMO-MOTOR-001 or MB-DEMO-CHASSI-002 for the demo)",
+      t("Paste the QR Code token (use MB-DEMO-MOTOR-001 or MB-DEMO-CHASSI-002 for the demo)"),
       "MB-DEMO-MOTOR-001",
     );
     if (demo) router.navigate({ to: "/checkin/$token", params: { token: demo.trim() } });
@@ -58,7 +60,7 @@ export function SearchBar({
 
   const useLoc = () => {
     if (onUseLocation) return onUseLocation();
-    toast.success("Location detected: Main Gate (P1)");
+    toast.success(t("Location detected: Main Gate (P1)"));
   };
 
   return (
@@ -72,7 +74,7 @@ export function SearchBar({
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          placeholder="Where would you like to go?"
+          placeholder={t("Where would you like to go?")}
           className="flex-1 bg-transparent text-[15px] outline-none placeholder:text-muted-foreground"
         />
         {loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
@@ -80,7 +82,7 @@ export function SearchBar({
           <button
             onClick={() => setQ("")}
             className="text-muted-foreground hover:text-foreground"
-            aria-label="Clear"
+            aria-label={t("Clear")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -92,13 +94,13 @@ export function SearchBar({
           onClick={useLoc}
           className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-card border border-border/70 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-soft)] hover:bg-accent transition"
         >
-          <MapPin className="h-4 w-4 text-[var(--mb-blue)]" /> My location
+          <MapPin className="h-4 w-4 text-[var(--mb-blue)]" /> {t("My location")}
         </button>
         <button
           onClick={scanQR}
           className="flex flex-1 items-center justify-center gap-2 rounded-xl text-white py-2 text-sm font-medium shadow-[var(--shadow-elegant)] bg-[var(--mb-blue)] hover:bg-[var(--mb-blue-dark)] transition"
         >
-          <QrCode className="h-4 w-4" /> Scan QR Code
+          <QrCode className="h-4 w-4" /> {t("Scan QR Code")}
         </button>
       </div>
 
@@ -119,7 +121,7 @@ export function SearchBar({
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-semibold truncate">{getBuildingName(b)}</div>
                 <div className="text-xs text-muted-foreground truncate">
-                  {CATEGORY_LABEL[b.category]}
+                  {getCategoryLabel(b.category)}
                   {b.department ? ` · ${getDepartmentName(b.department)}` : ""}
                 </div>
               </div>
@@ -129,7 +131,7 @@ export function SearchBar({
       )}
       {open && q && results.length === 0 && !loading && (
         <div className="absolute inset-x-0 top-full mt-2 rounded-2xl bg-popover border border-border/70 shadow-[var(--shadow-soft)] p-4 text-sm text-muted-foreground z-[600]">
-          No results for "{q}". Try a building number, name, or department.
+          {t('No results for "{query}". Try a building number, name, or department.', { query: q })}
         </div>
       )}
     </div>

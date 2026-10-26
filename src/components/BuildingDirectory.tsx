@@ -1,7 +1,9 @@
+import { useLanguage } from "@/hooks/use-language";
 import { useMemo, useState } from "react";
 import { Building2, Loader2, Search } from "lucide-react";
 import type { BuildingRow } from "@/lib/types";
 import { BuildingCard } from "@/components/BuildingCard";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   Sheet,
   SheetContent,
@@ -11,6 +13,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+import { searchBuildings } from "@/lib/buildings";
+
 interface BuildingDirectoryProps {
   buildings: BuildingRow[];
   loading?: boolean;
@@ -18,25 +22,12 @@ interface BuildingDirectoryProps {
 }
 
 export function BuildingDirectory({ buildings, loading, onSelect }: BuildingDirectoryProps) {
+  const { language, t } = useLanguage();
   const [query, setQuery] = useState("");
-  const filteredBuildings = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return buildings;
-
-    return buildings.filter((building) =>
-      [
-        building.number,
-        building.name_en,
-        building.name_pt,
-        building.description,
-        building.department,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase()
-        .includes(normalized),
-    );
-  }, [buildings, query]);
+  const filteredBuildings = useMemo(
+    () => (query.trim() ? searchBuildings(buildings, query, buildings.length) : buildings),
+    [buildings, query],
+  );
 
   return (
     <Sheet>
@@ -46,7 +37,7 @@ export function BuildingDirectory({ buildings, loading, onSelect }: BuildingDire
           className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background px-3 py-1.5 text-xs font-semibold transition hover:border-[var(--mb-blue)] hover:text-[var(--mb-blue)]"
         >
           <Building2 className="h-3.5 w-3.5" />
-          View all buildings
+          {t("View all buildings")}
           <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] text-muted-foreground">
             {buildings.length}
           </span>
@@ -62,17 +53,22 @@ export function BuildingDirectory({ buildings, loading, onSelect }: BuildingDire
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--mb-blue)] text-white">
               <Building2 className="h-5 w-5" />
             </span>
-            Building directory
+            {t("Building directory")}
           </SheetTitle>
-          <SheetDescription>Browse every plant building and choose a destination.</SheetDescription>
+          <SheetDescription>
+            {t("Browse every plant building and choose a destination.")}
+          </SheetDescription>
+          <div className="flex pt-2">
+            <LanguageSwitcher />
+          </div>
 
           <label className="mt-3 flex items-center gap-2 rounded-xl border border-input bg-background px-3 py-2.5 focus-within:ring-2 focus-within:ring-ring">
             <Search className="h-4 w-4 text-muted-foreground" />
-            <span className="sr-only">Search buildings</span>
+            <span className="sr-only">{t("Search buildings")}</span>
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search by building, number, or description"
+              placeholder={t("Search by building, number, or description")}
               className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
           </label>
@@ -83,7 +79,7 @@ export function BuildingDirectory({ buildings, loading, onSelect }: BuildingDire
             <div className="grid h-64 place-items-center text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Loading buildings…
+                {t("Loading buildings…")}
               </div>
             </div>
           ) : filteredBuildings.length > 0 ? (
@@ -96,9 +92,9 @@ export function BuildingDirectory({ buildings, loading, onSelect }: BuildingDire
             <div className="grid h-64 place-items-center px-6 text-center">
               <div>
                 <Building2 className="mx-auto mb-3 h-8 w-8 text-muted-foreground/60" />
-                <p className="font-medium">No buildings found</p>
+                <p className="font-medium">{t("No buildings found")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Try a different building name or number.
+                  {t("Try a different building name or number.")}
                 </p>
               </div>
             </div>

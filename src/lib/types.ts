@@ -7,6 +7,8 @@ export type BuildingRow = {
   name_en: string | null;
   category: "industrial" | "social" | "auxiliary" | "gate";
   description: string | null;
+  description_en?: string | null;
+  description_pt?: string | null;
   department: string | null;
   responsible: string | null;
   phone: string | null;

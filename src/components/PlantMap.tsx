@@ -1,7 +1,14 @@
+import { useLanguage } from "@/hooks/use-language";
 import { useEffect, useMemo, useRef } from "react";
 import L, { type LatLngBoundsExpression } from "leaflet";
 import { MapContainer, ImageOverlay, Marker, Polyline, Popup, useMap } from "react-leaflet";
-import { CATEGORY_LABEL, PLANT_HEIGHT, PLANT_IMAGE_URL, PLANT_WIDTH, toLatLng } from "@/lib/plant";
+import {
+  getCategoryLabel,
+  PLANT_HEIGHT,
+  PLANT_IMAGE_URL,
+  PLANT_WIDTH,
+  toLatLng,
+} from "@/lib/plant";
 import type { Point } from "@/lib/routing";
 
 export type BuildingMarker = {
@@ -24,6 +31,27 @@ const bounds: LatLngBoundsExpression = [
   [PLANT_HEIGHT, PLANT_WIDTH],
 ];
 
+function LocalizedMapControls() {
+  const map = useMap();
+  const { t } = useLanguage();
+  useEffect(() => {
+    map
+      .getContainer()
+      .querySelectorAll(".leaflet-popup-close-button")
+      .forEach((button) => {
+        button.setAttribute("aria-label", t("Close"));
+        button.setAttribute("title", t("Close"));
+      });
+    const zoom = L.control
+      .zoom({ zoomInTitle: t("Zoom in"), zoomOutTitle: t("Zoom out") })
+      .addTo(map);
+    return () => {
+      zoom.remove();
+    };
+  }, [map, t]);
+  return null;
+}
+
 function makeIcon(
   label: string,
   category: BuildingMarker["category"],
@@ -36,6 +64,12 @@ function makeIcon(
     iconSize: [34, 34],
     iconAnchor: [17, 17],
   });
+}
+
+function labelMarker(marker: L.Marker | null, building: BuildingMarker) {
+  const element = marker?.getElement();
+  element?.setAttribute("title", building.name);
+  element?.setAttribute("aria-label", `${building.number} — ${building.name}`);
 }
 
 // Waze-style user arrow. The arrow is a triangle inside a blue disc.
@@ -143,6 +177,7 @@ export function PlantMap({
   editable,
   onMove,
 }: PlantMapProps) {
+  const { language, t } = useLanguage();
   const mapRef = useRef<L.Map | null>(null);
   const polyline = useMemo(() => routePath?.map((p) => toLatLng(p.x, p.y)) ?? [], [routePath]);
 
@@ -156,12 +191,13 @@ export function PlantMap({
       zoom={-1}
       className={className}
       style={{ height: "100%", width: "100%", background: "#f8fafc" }}
-      zoomControl
+      zoomControl={false}
       attributionControl={false}
       ref={(m) => {
         if (m) mapRef.current = m;
       }}
     >
+      <LocalizedMapControls />
       <ImageOverlay url={PLANT_IMAGE_URL} bounds={bounds} opacity={1} />
 
       {buildings.map((b) => {
@@ -170,6 +206,11 @@ export function PlantMap({
         return (
           <Marker
             key={b.id}
+            ref={(marker) => {
+              labelMarker(marker, b);
+            }}
+            title={b.name}
+            alt={t("Map marker")}
             position={toLatLng(b.x, b.y)}
             draggable={editable}
             icon={makeIcon(
@@ -178,6 +219,7 @@ export function PlantMap({
               isDest ? "destination" : isOrigin ? "origin" : undefined,
             )}
             eventHandlers={{
+              add: (event) => labelMarker(event.target as L.Marker, b),
               click: () => onSelect?.(b),
               dragend: (e) => {
                 const ll = (e.target as L.Marker).getLatLng();
@@ -188,7 +230,19 @@ export function PlantMap({
               },
             }}
           >
-            <Popup minWidth={260} maxWidth={320}>
+            <Popup
+              minWidth={260}
+              maxWidth={320}
+              eventHandlers={{
+                add: (event) => {
+                  const closeButton = (event.target as L.Popup)
+                    .getElement()
+                    ?.querySelector(".leaflet-popup-close-button");
+                  closeButton?.setAttribute("aria-label", t("Close"));
+                  closeButton?.setAttribute("title", t("Close"));
+                },
+              }}
+            >
               <div className="space-y-3 text-sm">
                 <div>
                   <div className="flex items-start gap-2">
@@ -201,7 +255,7 @@ export function PlantMap({
                     <div className="min-w-0">
                       <div className="font-semibold leading-tight">{b.name}</div>
                       <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                        {CATEGORY_LABEL[b.category]}
+                        {getCategoryLabel(b.category)}
                       </div>
                     </div>
                   </div>
@@ -214,25 +268,25 @@ export function PlantMap({
                   <dl className="grid gap-1.5 border-t border-border pt-2 text-xs">
                     {b.department && (
                       <div className="flex justify-between gap-3">
-                        <dt className="text-muted-foreground">Department</dt>
+                        <dt className="text-muted-foreground">{t("Department")}</dt>
                         <dd className="text-right font-medium">{b.department}</dd>
                       </div>
                     )}
                     {b.responsible && (
                       <div className="flex justify-between gap-3">
-                        <dt className="text-muted-foreground">Responsible</dt>
+                        <dt className="text-muted-foreground">{t("Responsible")}</dt>
                         <dd className="text-right font-medium">{b.responsible}</dd>
                       </div>
                     )}
                     {b.hours && (
                       <div className="flex justify-between gap-3">
-                        <dt className="text-muted-foreground">Hours</dt>
+                        <dt className="text-muted-foreground">{t("Hours")}</dt>
                         <dd className="text-right font-medium">{b.hours}</dd>
                       </div>
                     )}
                     {b.dock && (
                       <div className="flex justify-between gap-3">
-                        <dt className="text-muted-foreground">Dock</dt>
+                        <dt className="text-muted-foreground">{t("Dock")}</dt>
                         <dd className="text-right font-medium">{b.dock}</dd>
                       </div>
                     )}
@@ -254,7 +308,7 @@ export function PlantMap({
                       onClick={() => onDirections(b)}
                       className="flex-1 rounded-lg bg-[var(--mb-blue)] px-3 py-2 text-xs font-semibold text-white hover:bg-[var(--mb-blue-dark)]"
                     >
-                      Get directions
+                      {t("Get directions")}
                     </button>
                   )}
                 </div>

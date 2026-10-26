@@ -161,19 +161,24 @@ export const EDGES: Edge[] = rawEdges.map(([a, b]) => ({
   modes: ["pedestrian", "car", "truck", "forklift"],
 }));
 
-export const CATEGORY_LABEL: Record<string, string> = {
+import { translate, type MessageKey } from "./i18n";
+
+const CATEGORY_LABEL: Record<string, MessageKey> = {
   industrial: "Industrial",
   social: "Social",
   auxiliary: "Auxiliary",
   gate: "Gate",
 };
 
-export const MODE_LABEL: Record<TransportMode, string> = {
+const MODE_LABEL: Record<TransportMode, MessageKey> = {
   pedestrian: "Walking",
   car: "Car",
   truck: "Truck",
   forklift: "Forklift",
 };
+
+export const getCategoryLabel = (category: string) => translate(CATEGORY_LABEL[category]);
+export const getModeLabel = (mode: TransportMode) => translate(MODE_LABEL[mode]);
 
 export const MODE_SPEED: Record<TransportMode, number> = {
   // meters per second (approximate)

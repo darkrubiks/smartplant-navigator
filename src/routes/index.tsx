@@ -1,8 +1,9 @@
+import { useLanguage } from "@/hooks/use-language";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { ClientOnly } from "@tanstack/react-router";
-import { fetchBuildings, getBuildingName } from "@/lib/buildings";
+import { fetchBuildings, getBuildingName, getBuildingDetails } from "@/lib/buildings";
 import { SearchBar } from "@/components/SearchBar";
 import { TopBar } from "@/components/TopBar";
 import { PlantMap, type BuildingMarker } from "@/components/PlantMap";
@@ -11,16 +12,6 @@ import { Star, History, Zap } from "lucide-react";
 import type { BuildingRow } from "@/lib/types";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Mercedes SmartPlant Navigator — São Bernardo plant map" },
-      {
-        name: "description",
-        content:
-          "Explore the Mercedes-Benz São Bernardo plant map and find buildings, docks, and gates with intelligent routing.",
-      },
-    ],
-  }),
   component: Home,
 });
 
@@ -36,6 +27,7 @@ function useRecent(): string[] {
 }
 
 function Home() {
+  const { language, t } = useLanguage();
   const router = useRouter();
   const { data: buildings = [], isLoading } = useQuery({
     queryKey: ["buildings"],
@@ -54,14 +46,10 @@ function Home() {
         category: b.category,
         x: b.x,
         y: b.y,
-        description: b.description,
-        department: b.department,
-        responsible: b.responsible,
         phone: b.phone,
-        hours: b.hours,
-        dock: b.dock,
+        ...getBuildingDetails(b, language),
       })),
-    [buildings],
+    [buildings, language],
   );
 
   const quickBuildings = useMemo(
@@ -82,7 +70,7 @@ function Home() {
       <ClientOnly
         fallback={
           <div className="grid h-full w-full place-items-center text-sm text-muted-foreground">
-            Loading map…
+            {t("Loading map…")}
           </div>
         }
       >
@@ -116,7 +104,7 @@ function Home() {
           <div className="rounded-2xl bg-card/95 border border-border/70 shadow-[var(--shadow-elegant)] backdrop-blur p-3">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                <Zap className="h-3.5 w-3.5 text-[var(--mb-blue)]" /> Quick destinations
+                <Zap className="h-3.5 w-3.5 text-[var(--mb-blue)]" /> {t("Quick destinations")}
               </div>
               <BuildingDirectory buildings={buildings} loading={isLoading} onSelect={goTo} />
             </div>
@@ -140,10 +128,10 @@ function Home() {
             {(recentIds.length > 0 || favorites.length > 0) && (
               <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
-                  <History className="h-3 w-3" /> Recent: {recentIds.length}
+                  <History className="h-3 w-3" /> {t("Recent")}: {recentIds.length}
                 </div>
                 <div className="flex items-center gap-1">
-                  <Star className="h-3 w-3" /> Favorites: {favorites.length}
+                  <Star className="h-3 w-3" /> {t("Favorites")}: {favorites.length}
                 </div>
               </div>
             )}

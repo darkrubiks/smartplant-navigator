@@ -1,3 +1,4 @@
+import { useLanguage } from "@/hooks/use-language";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,6 +6,10 @@ import { MBLogo } from "@/components/TopBar";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Truck, MapPin, Clock, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getBuildingName } from "@/lib/buildings";
+import { translateCatalogText } from "@/lib/catalog-translations";
+import { getLocale, type MessageKey } from "@/lib/i18n";
 
 export const Route = createFileRoute("/checkin/$token")({
   component: CheckinPage,
@@ -29,10 +34,13 @@ type TokenRow = {
 };
 
 function CheckinPage() {
+  const { language, t } = useLanguage();
   const { token } = Route.useParams();
   const router = useRouter();
   const [state, setState] = useState<
-    { status: "loading" } | { status: "error"; message: string } | { status: "ok"; data: TokenRow }
+    | { status: "loading" }
+    | { status: "error"; message: MessageKey }
+    | { status: "ok"; data: TokenRow }
   >({ status: "loading" });
 
   useEffect(() => {
@@ -61,17 +69,17 @@ function CheckinPage() {
 
   async function startNavigation() {
     if (state.status !== "ok") return;
-    const t = state.data;
+    const access = state.data;
     await supabase.from("arrivals").insert({
-      supplier_token_id: t.id,
-      building_id: t.destination_building_id,
-      company: t.company,
+      supplier_token_id: access.id,
+      building_id: access.destination_building_id,
+      company: access.company,
       source: "supplier_qr",
     });
-    if (t.destination_building_id) {
-      router.navigate({ to: "/nav/$destId", params: { destId: t.destination_building_id } });
+    if (access.destination_building_id) {
+      router.navigate({ to: "/nav/$destId", params: { destId: access.destination_building_id } });
     } else {
-      toast.error("No destination is configured for this token.");
+      toast.error(t("No destination is configured for this token."));
     }
   }
 
@@ -81,14 +89,15 @@ function CheckinPage() {
         <Link to="/">
           <MBLogo />
         </Link>
+        <LanguageSwitcher />
       </header>
       <main className="mx-auto max-w-md p-4">
         <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-elegant)]">
           <div className="bg-[var(--mb-graphite)] px-5 py-4 text-white">
             <div className="text-[11px] uppercase tracking-widest opacity-70">
-              Supplier Check-in
+              {t("Supplier Check-in")}
             </div>
-            <div className="text-lg font-semibold">Temporary access</div>
+            <div className="text-lg font-semibold">{t("Temporary access")}</div>
           </div>
 
           {state.status === "loading" && (
@@ -100,9 +109,9 @@ function CheckinPage() {
           {state.status === "error" && (
             <div className="p-6 text-center">
               <AlertTriangle className="mx-auto mb-2 h-8 w-8 text-destructive" />
-              <div className="font-semibold">{state.message}</div>
+              <div className="font-semibold">{t(state.message)}</div>
               <Button asChild className="mt-4">
-                <Link to="/">Back</Link>
+                <Link to="/">{t("Back")}</Link>
               </Button>
             </div>
           )}
@@ -111,7 +120,7 @@ function CheckinPage() {
             <div className="space-y-4 p-5">
               <div>
                 <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                  Welcome
+                  {t("Welcome")}
                 </div>
                 <div className="text-2xl font-semibold">{state.data.driver_name}</div>
                 <div className="text-sm text-muted-foreground">{state.data.company}</div>
@@ -122,10 +131,11 @@ function CheckinPage() {
                   <Truck className="mt-0.5 h-4 w-4 text-[var(--mb-blue)]" />
                   <div>
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Delivery
+                      {t("Delivery")}
                     </div>
                     <div className="font-medium">
-                      {state.data.delivery_desc ?? "No description"}
+                      {translateCatalogText(state.data.delivery_desc, language) ??
+                        t("No description")}
                     </div>
                   </div>
                 </div>
@@ -134,15 +144,18 @@ function CheckinPage() {
                     <MapPin className="mt-0.5 h-4 w-4 text-[var(--mb-blue)]" />
                     <div>
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                        Destination
+                        {t("Destination")}
                       </div>
                       <div className="font-medium">
-                        Building {state.data.buildings_destination.number} —{" "}
-                        {state.data.buildings_destination.name_en?.trim() ||
-                          state.data.buildings_destination.name_pt}
+                        {t("Building {number} — {name}", {
+                          number: state.data.buildings_destination.number,
+                          name: getBuildingName(state.data.buildings_destination, language),
+                        })}
                       </div>
                       {state.data.dock && (
-                        <div className="text-xs text-muted-foreground">{state.data.dock}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {translateCatalogText(state.data.dock, language)}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -152,12 +165,11 @@ function CheckinPage() {
                     <CheckCircle2 className="mt-0.5 h-4 w-4 text-[var(--mb-blue)]" />
                     <div>
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                        Entry gate
+                        {t("Entry gate")}
                       </div>
                       <div className="font-medium">
                         {state.data.buildings_gate.number} —{" "}
-                        {state.data.buildings_gate.name_en?.trim() ||
-                          state.data.buildings_gate.name_pt}
+                        {getBuildingName(state.data.buildings_gate, language)}
                       </div>
                     </div>
                   </div>
@@ -166,10 +178,10 @@ function CheckinPage() {
                   <Clock className="mt-0.5 h-4 w-4 text-[var(--mb-blue)]" />
                   <div>
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Access valid until
+                      {t("Valid until")}
                     </div>
                     <div className="font-medium">
-                      {new Date(state.data.valid_until).toLocaleString("en-US")}
+                      {new Date(state.data.valid_until).toLocaleString(getLocale(language))}
                     </div>
                   </div>
                 </div>
@@ -177,15 +189,17 @@ function CheckinPage() {
 
               {state.data.buildings_destination && (
                 <div className="rounded-xl bg-[var(--mb-blue)]/10 border border-[var(--mb-blue)]/30 p-3 text-sm">
-                  <div className="font-semibold text-[var(--mb-blue-dark)]">
-                    Hello, {state.data.driver_name.split(" ")[0]}!
-                  </div>
                   <div className="text-foreground/80">
-                    Your delivery will be made at Building {state.data.buildings_destination.number}{" "}
-                    —{" "}
-                    {state.data.buildings_destination.name_en?.trim() ||
-                      state.data.buildings_destination.name_pt}
-                    . I’ve prepared the best route for you.
+                    {t(
+                      "Hello, {name}! Your destination is {destination}. The route is ready for you.",
+                      {
+                        name: state.data.driver_name.split(" ")[0],
+                        destination: t("Building {number} — {name}", {
+                          number: state.data.buildings_destination.number,
+                          name: getBuildingName(state.data.buildings_destination, language),
+                        }),
+                      },
+                    )}
                   </div>
                 </div>
               )}
@@ -194,7 +208,7 @@ function CheckinPage() {
                 onClick={startNavigation}
                 className="w-full bg-[var(--mb-blue)] hover:bg-[var(--mb-blue-dark)] text-white h-11"
               >
-                Start navigation
+                {t("Start navigation")}
               </Button>
             </div>
           )}
