@@ -1,0 +1,70 @@
+id,number,name_pt,name_en,category,x,y,description_pt,description_en,department,responsible,phone,hours,dock,keywords
+5ef1d3f1-746a-4324-9e13-aabfb88345e2,04,Bombeiros,Fire Department,auxiliary,1630,1630,Corpo de bombeiros da planta,Plant fire brigade,Segurança,Comandante,11 4173-0400,24h,,bombeiros|fire|emergencia
+886f43bf-214d-4c24-9943-6e9f98d1719e,101,Auditório,Auditorium,social,2024,697,Auditório principal,Main auditorium,Eventos,Reservas,11 4173-1010,08h-18h,,auditorio|auditorium|eventos
+d6f7f338-32d0-4da3-99d7-086274c4a878,102,Centro de Treinamento,Training Center,social,2012,735,Centro de treinamento corporativo,Corporate training center,RH,Coord. de T&D,11 4173-1020,07h-18h,,treinamento|training|t&d|curso
+579eeff9-9b26-4251-b087-117ae242fb85,103,Aprendizagem Industrial,Industrial Learning,social,2081,652,Escola SENAI Mercedes-Benz,Mercedes-Benz SENAI school,RH,Coord. SENAI,11 4173-1030,07h-17h,,aprendizagem|senai|learning|escola
+e24ebc61-5bc9-4dd5-be1f-580310ba67b6,104,Quadra de Esportes,Sport Court,social,2153,618,Quadra poliesportiva,Multi-sport court,RH,Serviços Gerais,,06h-22h,,quadra|esportes|sport
+dac9cf6e-c586-4294-8b80-89272431695a,106,Prédio 106,,auxiliary,1799,1260,,,,,,,,
+0736fd6b-b209-41b0-83a2-a5e5e517b3bf,110,Prédio 110,,auxiliary,1926,773,,,,,,,,
+1bc4f362-c03c-4322-9daa-f0b5dc106539,113,Prédio 113,,social,1880,704,,,,,,,,
+c9bd47eb-c5f7-48ca-87c1-985c1e1b783c,114,Prédio 114,,industrial,2406,875,,,,,,,,
+bb0044ec-32c5-4ae8-97e7-8a83295cd40a,116,Prédio 116,,auxiliary,1068,1461,,,,,,,,
+94127279-e98c-4959-a5bd-3f1fdcee8856,117,Prédio 117,,auxiliary,1066,1417,,,,,,,,
+32fb1387-241d-4c77-a42b-4ad347186722,118,Espaço Mercedes,Customer Relationship Center,social,1874,1417,Centro de exibição e relacionamento,Exhibition and customer relations center,Marketing,Recepção Espaço MB,11 4173-1180,09h-18h,,espaco mercedes|customer|showroom|exposicao
+020d1718-97b5-4a45-ae8c-67c792401747,120,Prédio 120,,auxiliary,2061,549,,,,,,,,
+e08b6820-1e92-41d7-92a5-cca7abb4652f,121,Escritório Engenharia,R&D Offices,social,454,1536,Escritórios de engenharia,Engineering offices,Engenharia,Diretoria de Eng.,11 4173-1210,07h-19h,,engenharia|engineering|r&d
+11055a95-2caf-4e7a-b172-feae4d2a8f32,122,Desenvolvimento de Produto,R&D Center,social,460,1450,Centro de desenvolvimento de produto,Product development center,Engenharia,Diretoria de P&D,11 4173-1220,07h-19h,,desenvolvimento|r&d|pd|produto
+f4f5b46f-d39a-46e0-a445-932ca7e6e0c0,123,Prédio 123,,social,319,1642,,,,,,,,
+24b48196-e95f-4b47-a368-92583a0651f6,124,CKD Center,CKD Center,auxiliary,2408,1398,Centro de kits CKD para exportação,CKD kit center for export,Logística,Eng. Sandra Reis,11 4173-1240,06h-22h,Doca CKD,ckd|center|exportacao
+7e6ddfe8-bdc6-4c3c-83bc-960d2ef59cfc,128,Prédio 128,,auxiliary,1712,824,,,,,,,,
+c674e6ab-663f-4a30-a339-ee6eb0bff3ff,129,Portaria Gleba Sul,South Parking Gate,gate,1600,1832,Acesso ao estacionamento sul,Access to the south parking area,Segurança,Portaria Gleba Sul,,24h,,portaria|gleba sul|estacionamento
+927ee39a-08e0-43d8-9687-2652f4058b9d,13,Escritório 13/14,Offices 13/14,social,1704,1630,Escritórios administrativos,Administrative offices,Administrativo,Recepção,11 4173-1300,07h-19h,,escritorio|office
+88f7f3e5-ecf7-4735-b2e4-591143f5adc1,130,Prédio 130,,auxiliary,683,1470,,,,,,,,
+78a9329e-42e4-4116-8e84-ee70c323a7c1,131,Prédio 131,,auxiliary,1774,617,,,,,,,,
+369411e4-bc0e-486a-afbf-1ec09b24d71e,132,Prédio 132,,auxiliary,650,1398,,,,,,,,
+5b17ec75-d8e7-41ca-86a4-51d4ae2eadeb,134,Prédio 134,,auxiliary,1549,1687,,,,,,,,
+1d7948e5-3d9e-4393-83f1-867118f0ef57,136,Escritórios 136,Offices 136,social,609,1390,Escritórios,Offices,Administrativo,,,07h-19h,,escritorio|office
+90f8f2fb-41ec-4a0f-bf31-756222866b84,137,Prédio 137,,auxiliary,643,1292,,,,,,,,
+37695e0f-19f0-482f-b8ff-772ef5898134,138,Prédio 138,,auxiliary,666,1356,,,,,,,,
+17cf8dcf-f26d-4509-8a16-386c92caa085,140,Posto de Combustível,Gas Station,auxiliary,1876,1208,Posto de abastecimento interno,Internal fuel station,Serviços,Frentista,,06h-22h,,posto|combustivel|gas station
+b8627181-4530-43e6-8cdc-4cd6450048d8,142,Prédio 142,,auxiliary,722,1631,,,,,,,,
+244cf942-c856-42d5-8faa-c81b1fa11fb6,145,Prédio 145,,auxiliary,1734,1261,,,,,,,,
+8f5234ea-86c9-49e5-8a19-2877eb842b54,146,Prédio 146,,auxiliary,1913,1137,,,,,,,,
+7e4794f8-42af-42ed-b40b-3c6b151e7e4c,147,Almoxarifado 147,Warehouse 147,industrial,1868,846,Almoxarifado auxiliar,Auxiliary warehouse,Logística,Chefe do Almoxarifado,,06h-22h,Doca W2,almoxarifado|warehouse
+8eaa0981-5cca-47b3-9301-f140f645974d,18,Manutenção,Maintenance,auxiliary,1488,1624,Oficina de manutenção,Maintenance workshop,Manutenção,Chefe da Manutenção,,06h-22h,,manutencao|maintenance
+3343c8ce-05ba-4779-808c-a48f140341f6,20,Escritórios 20,Offices 20,social,1740,1388,Escritórios administrativos,Administrative offices,Administrativo,Recepção,11 4173-2000,07h-19h,,escritorio|office
+580ef168-8248-4bc4-b7d9-bb20cbf1f577,21,Fabricação de Eixos,Axles Machining & Assembly,industrial,1496,1318,Fabricação e montagem de eixos,Axle manufacturing and assembly,Produção,Eng. Carlos Mendes,11 4173-2101,06h-22h,Doca A1,eixos|axles|fabricacao
+13866ac9-bb43-4f87-8a38-f1348801dc9b,22,Prédio 22,,auxiliary,1798,1489,,,,,,,,
+039d4d1e-21d2-4f73-9c73-32282e6f34c7,24,Prédio 24,,auxiliary,651,1614,,,,,,,,
+d14471e5-a370-446b-8df9-b39649473638,25,Prédio 25,,auxiliary,1398,1635,,,,,,,,
+dfbfb703-5071-4470-99a4-bd370cc32604,29,Prédio 29,,auxiliary,988,1286,,,,,,,,
+fe7de49a-4485-4612-9ccb-6c6b6f4ed8d9,30,Prédio 30,,auxiliary,827,1287,,,,,,,,
+5192aef8-5597-4cbf-bb26-8758c5028743,31,Montagem de Caminhões,Trucks Final Assembly,industrial,1412,1411,Linha de montagem final de caminhões,Truck final assembly line,Produção,Eng. Ana Ribeiro,11 4173-3140,24h,Doca C1,caminhoes|trucks|montagem final|40
+fd7335a5-f7fc-436a-afa7-6f76125fa8ac,32,Entrega Técnica de Veículos,Trucks Technical Release,industrial,1056,1314,Entrega técnica e almoxarifado de tintas,Vehicle technical release and paint warehouse,Qualidade,Eng. Paulo Souza,11 4173-3200,06h-22h,Doca T1,entrega tecnica|pintura|tintas|pó
+ce7ab1c5-01b0-455a-a1f3-1d4f87b3c812,34,Estamparia & KTL,Press Shop & KTL Paint,industrial,1256,1280,Estamparia e pintura KTL,Press shop and KTL painting,Produção,Eng. Ricardo Alves,11 4173-3400,24h,Doca E1,estamparia|ktl|pintura|press
+3909d08d-1d00-430a-99c7-e6524631f1b2,35,Prédio 35,,auxiliary,582,1527,,,,,,,,
+a5dfc97c-4f6b-439c-822a-6fe4559d4a73,37,Prédio 37,,auxiliary,594,1467,,,,,,,,
+5247755f-d500-420e-a274-df8eb1524ac1,39,Restaurante - Ambulatório,Restaurant - Medical Service,social,1256,1642,"Restaurante, ambulatório e escritórios","Restaurant, medical clinic and offices",RH / Saúde,Dra. Marina Alves,11 4173-3900,06h-20h,,restaurante|ambulatorio|medico|saude|refeitorio
+5c2bdb39-a8de-4017-8f4b-4acebd2bf242,40,Montagem de Caminhões (Prédio 40),Trucks Assembly Bldg 40,industrial,1144,1412,Prédio 40 - Montagem de caminhões,Building 40 - Truck assembly,Produção,Eng. Ana Ribeiro,11 4173-3140,24h,Doca C2,caminhoes|trucks|montagem|40
+bca2b991-effa-43ab-8a7e-51be9c4614f1,41,Montagem de Cabinas,Cabin Trim,industrial,745,1503,Montagem interna de cabines,Cab interior assembly,Produção,Eng. Marcos Silva,11 4173-4101,24h,Doca CB1,cabinas|cabines|cabin trim|montagem
+8d6c8ce7-3d56-4643-946a-c9bbc0585d39,42,Almoxarifado 42,Warehouse 42,industrial,806,1658,Almoxarifado geral,General warehouse,Logística,Chefe do Almoxarifado,11 4173-4200,06h-22h,Doca W1,almoxarifado|warehouse|estoque
+25fa9921-0241-44a7-b9ea-450c1fe98c56,44,Ferramentaria,Tooling Workshop,auxiliary,1668,1666,Ferramentaria central,Central tooling workshop,Manutenção,Chefe da Ferramentaria,,06h-18h,,ferramentaria|tooling
+4887f304-6962-41dc-83aa-0e4d7b4171a3,45,Usinagem e Montagem de Motores,Engines Machining & Assembly,industrial,2072,840,Usinagem e montagem de motores e câmbios,Engine and transmission machining and assembly,Produção,Eng. João Silva,11 4173-4500,24h,Doca M1,motores|engines|usinagem|cambios|motor
+1f018870-2a8c-4b1f-b467-62af0e457fa9,46,Montagem de Chassis de Ônibus,Bus Chassis Assembly,industrial,2078,1236,Linha de chassis para ônibus,Bus chassis assembly line,Produção,Eng. Fernanda Lima,11 4173-4600,24h,Doca CH1,onibus|bus|chassis|montagem
+75736238-07b2-4db9-bbc8-97d4913fe245,47,Prédio 47,,auxiliary,1913,915,,,,,,,,
+f55a13f1-a69c-4ec6-be77-c2d022adb81d,49,Preparação de Tintas,Paint Preparation,auxiliary,682,1522,Preparação e almoxarifado de tintas,Paint preparation and storage,Produção,Chefe da PT,,06h-22h,,tintas|paint|preparacao
+e82fb22a-713d-4d6f-b94a-f9aa11c761e1,50,Prédio 50,,auxiliary,604,1687,,,,,,,,
+f1d9e14c-6beb-4291-aaf0-ffd4b46e8b82,52,Posto Bancário,Bank Branch,social,1934,1614,Agência bancária,Bank branch,Serviços,Banco,11 4173-5200,10h-16h,,banco|bank|posto bancario
+3bb8240c-5a0f-4042-8c28-92649359809f,54,Escritórios 54,Offices 54,social,1808,1316,Escritórios,Offices,Administrativo,Recepção,,07h-19h,,escritorio|office
+cc8de771-5f7a-486d-a974-7ac45bcc49d7,58,Fabricação de Peças - MCI,Parts Manufacturing,auxiliary,741,1405,Fabricação de peças e montagem inferior,Parts manufacturing and underbody assembly,Produção,Eng. Bruno Costa,11 4173-5800,24h,Doca P1,pecas|parts|mci|underbody
+ef0796b0-98d9-4a73-8c76-663861207a48,60,Restaurante - Vestiário,Restaurant - Locker Room,social,2193,1080,Restaurante e vestiários,Restaurant and locker rooms,Serviços,Chefe do Restaurante,11 4173-6000,06h-20h,,restaurante|vestiario|refeitorio
+6c37b2ba-a4ac-4aca-babf-3d46ea790506,62,Prédio 62,,auxiliary,542,1670,,,,,,,,
+aba571f8-0348-4e63-aa84-f2e4be8f16cf,65,Prédio 65,,auxiliary,686,1626,,,,,,,,
+2a1cc3ee-1593-400f-8c5d-55861561728d,67,Testes e Montagem Motor Câmbio,Engines Test & Dress-up,industrial,2389,956,Banco de testes e dress-up de motores,Engine testing and dress-up,Engenharia,Eng. Rafael Torres,11 4173-6700,06h-22h,Doca TM1,testes motor|dress-up|banco de provas
+31a01c42-bb93-459e-bf1e-2164000d77ab,68,Prédio 68,,auxiliary,2318,1070,,,,,,,,
+ea25467d-78b5-4af3-b06f-556b1080fd30,P1,Portaria Principal,Main Gate,gate,1804,1446,Entrada principal da planta,Main plant entrance,Segurança,Portaria 1,11 4173-1000,24h,,portaria|entrada|gate|main
+523f3b15-bdd1-4c34-8806-b37bcab179da,P2,Portaria 2 - Recebimento de Materiais,Gate 2 - Materials Receiving,gate,1864,738,Portaria de recebimento de materiais,Materials receiving gate,Logística,Recebimento,11 4173-2000,06h-22h,Doca R1,portaria|recebimento|materiais|gate 2|113
+dd17266d-304a-44a5-82de-16948ae8c2f2,P3,Portaria 3,Gate 3,gate,1829,1644,Portaria 3,Gate 3,Segurança,Portaria 3,,24h,,portaria|gate 3
+b493e4b9-85d0-4e02-b3fd-5299db89c259,P4,Portaria 4,Gate 4,gate,2568,1268,Portaria 4 - Expedição,Gate 4 - Dispatch,Logística,Portaria 4,,06h-22h,,portaria|gate 4|expedicao
+0863e907-f646-4219-b4e3-ea93c583ab51,P5,Portaria 5,Gate 5,gate,1968,1438,Portaria 5,Gate 5,Segurança,Portaria 5,,24h,,portaria|gate 5
+1c3d4cb2-2390-45e7-999b-5be9e6f31c26,P6,Portaria 6,Gate 6,gate,292,1664,Portaria 6,Gate 6,Segurança,Portaria 6,,24h,,portaria|gate 6

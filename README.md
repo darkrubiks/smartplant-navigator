@@ -1,146 +1,77 @@
 # Mercedes SmartPlant Navigator
 
-Independent plant navigator for Mercedes-Benz São Bernardo do Campo: searchable
-map and routes for walking/car/truck/forklift.
-The UI, street graph,
-map, building catalog integration, and Supabase row-level policies are preserved.
+A single static HTML page for the São Bernardo do Campo plant, retaining the original full-screen map layout: floating Mercedes branding and language buttons, bottom search and quick destinations, a slide-out building directory with image cards, and floating route guidance. The page uses native CSS and JavaScript modules. No React, bundler, database, account, API key, or production server is needed.
 
-Source: https://github.com/darkrubiks/smartplant-navigator (public, branch `main`).
+## Change buildings without changing code
 
-## Architecture
+Edit **[data/buildings.csv](data/buildings.csv)** and commit the change to GitHub's `main` branch. GitHub Actions validates the CSV and automatically deploys the page to GitHub Pages. Editing names, descriptions, locations, categories, and contact details changes the corresponding cards and map markers. Add or remove rows to add or remove buildings.
 
-- React 19, TypeScript, Vite 8, TanStack Router and Query
-- Tailwind CSS 4, Radix UI, Leaflet/React Leaflet, Recharts
-- External Supabase Database; SQL migrations in `supabase/migrations`
+Read **[the CSV editing guide](data/README.md)** for column definitions, Excel/LibreOffice instructions, quoting, coordinate measurement, and deployment troubleshooting. A local edit must be committed and pushed/uploaded to GitHub to update the public site. The page checks for published catalog changes every 60 seconds while visible, when returning to its tab, and through **Refresh data**. Deployment and GitHub caching may add a delay.
 
-The frontend is a static SPA and builds to `dist/`. GitHub Pages serves the
-frontend; it does not run the database. All app routes are public, and database
-requests use the public browser key without user sessions.
-There is no Node production server or proprietary editor runtime dependency.
+## Main functions
 
-## Local setup
+- Search by number, name, description, department, responsible person, or keywords in English or Portuguese; accents are ignored.
+- Filter buildings by category; keep favorites and the last five route destinations on the device.
+- Explore the original plant drawing with labeled markers, drag/pinch/scroll zoom, zoom buttons, or keyboard arrows and +/−/0.
+- Select a building for its description, department, contact, opening hours, dock, and map coordinates.
+- Plan routes from any catalog building for walking, car, truck, or forklift. See approximate distance, time, arrival time, and turn instructions.
+- Simulate a route at 25× speed, pause, restart, recalculate, and confirm arrival locally for the current route.
+- Request a fresh browser GPS location with its reported accuracy. Coordinates stay in the browser and appear on a separate coordinate grid; the uncalibrated plant drawing does not support GPS projection.
+- Switch between English and Brazilian Portuguese. The preference is saved locally.
 
-Use Node.js 22.12+ (Node 22 is used by CI) and npm.
+Arrival confirmation is local to the current page session; no arrival record is sent to a server. Favorites, recent destinations, and the language preference use local storage when available. The external Supabase backend is no longer used or required. It was not modified or deleted during the conversion. The original public catalog was read and exported, preserving all 69 current rows and their UUIDs; source records with no description remain blank.
+
+## Files
+
+| Path                                                                      | Purpose                                                       |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `index.html`                                                              | The only HTML page                                            |
+| `assets/styles.css`                                                       | Responsive styling                                            |
+| `assets/app.js`                                                           | Directory, map controls, navigation, and browser interactions |
+| `assets/csv.js`                                                           | CSV parsing, validation, and loading                          |
+| `assets/buildings.js`, `assets/catalog-translations.js`, `assets/i18n.js` | Search and bilingual text                                     |
+| `assets/plant.js`, `assets/routing.js`                                    | Original map geometry and street routing                      |
+| `assets/geolocation.js`                                                   | Browser GPS lookup                                            |
+| `data/buildings.csv`                                                      | Editable source of truth for buildings                        |
+| `scripts/`, `tests/`                                                      | Small local preview/packaging helpers and regression checks   |
+
+The static site can be served directly from this folder over HTTP/HTTPS. Opening `index.html` by double-clicking (`file://`) is not supported because browsers restrict module and CSV requests. No compilation is needed to run the page.
+
+## Local preview and checks
+
+For preview only, use Node.js 22.12+ with **no dependency installation**:
+
+```sh
+node scripts/serve.mjs
+```
+
+Open the printed local URL (normally `http://127.0.0.1:4173/`). Edit the CSV, click **Refresh data**, and the page updates. HTML/CSS/JavaScript changes require a browser refresh.
+
+For development checks, install the five development-only tools:
 
 ```sh
 npm ci
-cp .env.example .env
-# Fill in your Supabase project's public URL and publishable key in .env
-npm run dev
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run preview
 ```
 
-The existing local `.env` is preserved and ignored by Git. Only `.env.example`
-belongs in source control. Vite exposes every `VITE_` value in the browser:
-never use service-role keys or secret Supabase keys.
+`npm run build` validates the CSV, cleans `dist/`, then copies only the HTML, public assets, and data into it. It does not bundle or transpile the app. TypeScript checks the JavaScript directly with `checkJs`; the tests cover CSV editing/validation, bilingual search, street routes, and location handling. `npm run format` formats the maintained source.
 
-| Variable                        | Purpose                                                                  |
-| ------------------------------- | ------------------------------------------------------------------------ |
-| `VITE_SUPABASE_URL`             | Existing Supabase project URL                                            |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Public browser key; database access is governed by RLS                   |
-| `VITE_BASE_PATH`                | `/` locally; `/<repository>/` for project Pages; `/` for a custom domain |
+## GitHub Pages
 
-The original Supabase project is still referenced in `supabase/config.toml`.
-No database was copied, reset, or migrated remotely. For a new independently
-managed Supabase project, review the included schema/RLS migrations, link it with
-the Supabase CLI, then run `supabase db push` and update the public environment
-variables. Do not reset production data. The
-account pages and in-app administration have been removed; existing database
-policies and historical migrations remain in place.
+The existing `.github/workflows/deploy.yml` runs lint, JavaScript type checks, tests, and the static packaging step on pushes and pull requests to `main`. Every push to `main`, including a CSV-only edit, publishes the validated `dist/` artifact when repository variable `PAGES_ENABLED=true`. Pull requests validate without deploying. Manual workflow dispatch is also supported.
 
-## Languages
+Keep **Settings → Pages → Build and deployment → Source** set to **GitHub Actions**, and keep **Settings → Secrets and variables → Actions → Variables → PAGES_ENABLED** set to `true` for deployment. No Supabase or base-path variables are needed. All URLs are relative, so the page works at a repository path or at a custom domain root. The existing production target is [darkrubiks.github.io/smartplant-navigator](https://darkrubiks.github.io/smartplant-navigator/).
 
-Use the **EN / PT-BR** switch on the map, navigation, or building
-directory. The first visit follows the browser language; an explicit choice is
-saved locally and synchronized across tabs. Switching languages keeps the current
-route and navigation state.
+Shared links use `#/`, `#/building/<id>`, and `#/nav/<id>` with optional `?from=<id>&mode=pedestrian` after the hash. Existing `#/nav/<uuid>` links still work because exported IDs were retained. Hash URLs also work after refresh on Pages.
 
-Interface messages, accessibility labels, directions, catalog descriptions and
-department labels support English and Brazilian Portuguese. Search accepts both
-languages and ignores accents. Dates, times and decimal separators follow the
-selected language. Proper names and the original printed map image stay as provided.
+If an edit does not appear, check the latest Actions run, verify that it deployed successfully, then use **Refresh data** or reload after GitHub's cache updates. Invalid CSV rows report the row number in the build log and cannot replace the last successful deployment. A page that already loaded valid data keeps displaying that catalog if a later fetch or parse fails.
 
-Messages live in `src/lib/i18n.ts`; known catalog phrases live in
-`src/lib/catalog-translations.ts`. New backend descriptions can provide
-`description_en` / `description_pt` fields, or add their phrases to the catalog
-dictionary. Unrecognized free text is preserved rather than guessed.
+Workflow setup follows [GitHub's custom Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
-## Routes and refresh
+## Migration and private configuration
 
-**My location** requests a fresh, high-accuracy browser location fix when clicked.
-Allow location access and use HTTPS (or localhost). The local coordinate map shows
-the returned latitude/longitude, a marker, and the reported accuracy radius. It
-loads no external map tiles and does not store or send these coordinates to the
-backend. **Back to plant map** returns to the factory drawing. That drawing has
-no GPS calibration, so geographic coordinates are not projected onto it.
-
-| URL fragment    | Access | Purpose                                  |
-| --------------- | ------ | ---------------------------------------- |
-| `#/`            | Public | Plant map, directory, quick destinations |
-| `#/nav/:destId` | Public | Route guidance and simulation            |
-
-Database RLS still limits administrative writes to the `admin` role. Hash routing lets
-shared URLs and browser refresh work on static hosting. Shared links must
-include both the repository base path and the hash. Old clean
-URLs such as `/nav/id` are not automatically redirected by GitHub Pages; distribute
-the new hash URLs. The map and all public assets respect the configured base path.
-
-## Commands
-
-| Command             | Purpose                                                                     |
-| ------------------- | --------------------------------------------------------------------------- |
-| `npm run dev`       | Development server                                                          |
-| `npm run lint`      | ESLint; existing Fast Refresh and navigation hook warnings are non-blocking |
-| `npm run typecheck` | TypeScript source and generated-route checks                                |
-| `npm test`          | Building search, route guidance, and public database access checks          |
-| `npm run build`     | Generate route tree and create static production files                      |
-| `npm run preview`   | Preview the production build                                                |
-| `npm run format`    | Format source with Prettier                                                 |
-
-Run `npm run build` before type checking if route files have changed, so
-`src/routeTree.gen.ts` is regenerated. Generated route and database types are
-excluded from formatting/linting. Use the npm lockfile for reproducible installs.
-
-## GitHub Actions and Pages
-
-`.github/workflows/deploy.yml` runs on pushes to `main` and manual dispatch. It
-installs with `npm ci`, runs lint, builds/generates routes, runs TypeScript and
-tests, checks public configuration, and uploads `dist/` as a Pages artifact.
-Deployment uses the official GitHub Actions, minimal job permissions, a shared
-concurrency group, and the `github-pages` environment; the deployment URL appears
-in the run summary.
-
-In repository Settings > Secrets and variables > Actions, set these **variables**:
-`VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
-These values are public browser configuration. The workflow
-calculates `/<repository>/` automatically; set `VITE_BASE_PATH` only to override it.
-
-The owner chose to make this repository **public** to use Pages with the verified
-GitHub Free account. Pages is configured to deploy through GitHub Actions, with
-repository variable `PAGES_ENABLED=true`. Each push to `main` validates and deploys
-the app; manual workflow dispatch is also available. Both the source and the
-published website are public. Consult
-https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages.
-
-Production URL:
-`https://darkrubiks.github.io/smartplant-navigator/`.
-
-If source privacy is needed later, GitHub Pages from a private personal repository
-requires a supporting plan such as Pro. Review hosting before changing visibility.
-No alternate provider or paid plan is provisioned here.
-
-## Troubleshooting
-
-- Database configuration error: fill the two Supabase variables and rebuild.
-- Empty building directory: check the Supabase project, table migrations, RLS,
-  and browser network errors. A successful static build does not verify database health.
-- Missing map or assets: verify the trailing slash in `VITE_BASE_PATH` and rebuild.
-- Pages job skipped: enable Pages and set `PAGES_ENABLED=true`.
-- Pages errors after changing to a private repository: check plan eligibility and
-  choose an appropriate plan or hosting strategy before publishing again.
-
-## Local migration archive
-
-`.migration-backup/` preserves replaced integration files and original package
-manifests locally. It is excluded from Git along with old generated output,
-local logs, dependency folders, private configuration, and the existing pitch deck.
-Original external projects, repositories, and backend infrastructure were not deleted.
+The original framework source, database schema, and migration helpers have been archived locally under ignored `.migration-backup/`; published Git history is preserved. None of those files are part of the site or required to edit it. Existing private environment files remain ignored and are never copied to `dist/`. Do not commit keys or private environment files. Only the static page, public assets, and catalog are published.

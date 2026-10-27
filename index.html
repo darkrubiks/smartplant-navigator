@@ -15,11 +15,249 @@
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary" />
-    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+    <link rel="stylesheet" href="./assets/styles.css" />
     <title>Mercedes SmartPlant Navigator</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <header class="topbar">
+      <a class="brand" href="#/" aria-label="SmartPlant Navigator home">
+        <img src="./assets/mercedes-benz-star.svg" alt="" width="36" height="36" />
+        <span
+          ><strong>SmartPlant <span>Navigator</span></strong
+          ><small>MERCEDES-BENZ</small></span
+        >
+      </a>
+      <div class="language" role="group" aria-label="Language" data-label="Language">
+        <select id="language" hidden aria-hidden="true">
+          <option value="en">EN</option>
+          <option value="pt-BR">PT-BR</option></select
+        ><button
+          type="button"
+          lang="en"
+          data-language="en"
+          aria-label="English"
+          aria-pressed="false"
+        >
+          EN</button
+        ><button
+          type="button"
+          lang="pt-BR"
+          data-language="pt-BR"
+          aria-label="Português (Brasil)"
+          aria-pressed="false"
+        >
+          PT-BR
+        </button>
+      </div>
+    </header>
+    <main>
+      <h1 class="sr-only">Mercedes SmartPlant Navigator</h1>
+      <section class="map-section" aria-label="Plant map" data-label="Plant map">
+        <div class="map-wrap" id="map-wrap">
+          <svg
+            id="plant-map"
+            viewBox="0 0 2698 1964"
+            role="group"
+            aria-label="Interactive plant map"
+            data-label="Interactive plant map"
+            tabindex="0"
+          >
+            <title>São Bernardo do Campo plant map</title>
+            <image href="./assets/planta-sbc.jpg" width="2698" height="1964" />
+            <g id="route-layer" pointer-events="none"></g>
+            <g id="markers"></g>
+            <g id="traveler" pointer-events="none" hidden>
+              <g class="traveler-icon">
+                <circle r="29" fill="#155bc0" stroke="white" stroke-width="4" />
+                <path d="M0 -19 L13 13 L0 7 L-13 13 Z" fill="white" />
+              </g>
+            </g>
+          </svg>
+          <div class="map-controls">
+            <button id="zoom-in" aria-label="Zoom in" data-label="Zoom in">+</button
+            ><button id="zoom-out" aria-label="Zoom out" data-label="Zoom out">−</button
+            ><button id="fit-map" aria-label="Fit map" data-label="Fit map">⤢</button>
+          </div>
+          <section
+            id="details"
+            class="map-popup"
+            hidden
+            aria-label="Building details"
+            data-label="Building details"
+          ></section>
+          <section id="location-panel" class="location-panel" hidden aria-live="polite"></section>
+        </div>
+      </section>
+      <section class="home-dock" aria-label="Find a destination" data-label="Find a destination">
+        <div class="map-search-container">
+          <div
+            id="search-results"
+            class="search-results"
+            hidden
+            aria-label="Search results"
+            data-label="Search results"
+          ></div>
+          <label class="map-search"
+            ><svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="10.5" cy="10.5" r="7.5" />
+              <path d="m16 16 5 5" /></svg
+            ><span class="sr-only" data-i18n="Search buildings">Search buildings</span
+            ><input
+              id="map-search"
+              type="search"
+              autocomplete="off"
+              placeholder="Where would you like to go?"
+              data-placeholder="Where would you like to go?"
+              aria-controls="search-results"
+              aria-expanded="false"
+          /></label>
+          <button id="locate" class="location-button">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z" />
+              <circle cx="12" cy="10" r="2.5" /></svg
+            ><span data-i18n="My location">My location</span>
+          </button>
+        </div>
+        <div class="quick-panel">
+          <div class="quick-heading">
+            <h2>
+              <span class="quick-symbol" aria-hidden="true">ϟ</span
+              ><span data-i18n="Quick destinations">Quick destinations</span>
+            </h2>
+            <button id="open-directory" class="directory-trigger" aria-haspopup="dialog">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M4 21V3h12v18M16 9h4v12M8 7h4M8 11h4M8 15h4M2 21h20" /></svg
+              ><span data-i18n="View all buildings">View all buildings</span
+              ><span id="total-count" class="count"></span>
+            </button>
+          </div>
+          <div id="quick-destinations" class="quick-destinations"></div>
+          <div id="recent-summary" class="recent-summary" hidden></div>
+        </div>
+      </section>
+      <div id="route-instruction" class="route-instruction" hidden aria-live="polite"></div>
+      <section
+        id="route-panel"
+        class="route-panel"
+        hidden
+        aria-label="Route guidance"
+        data-label="Route guidance"
+      ></section>
+      <dialog
+        id="directory-dialog"
+        aria-labelledby="directory-title"
+        aria-describedby="directory-description"
+      >
+        <div class="directory-header">
+          <button id="close-directory" class="close" aria-label="Close" data-label="Close">
+            ×
+          </button>
+          <h2 id="directory-title">
+            <span class="directory-icon" aria-hidden="true">▦</span
+            ><span data-i18n="Building directory">Building directory</span>
+          </h2>
+          <p
+            id="directory-description"
+            class="muted"
+            data-i18n="Browse every plant building and choose a destination."
+          >
+            Browse every plant building and choose a destination.
+          </p>
+          <div class="directory-language" role="group" aria-label="Language" data-label="Language">
+            <select id="directory-language" hidden aria-hidden="true">
+              <option value="en">EN</option>
+              <option value="pt-BR">PT-BR</option></select
+            ><button
+              type="button"
+              lang="en"
+              data-language="en"
+              aria-label="English"
+              aria-pressed="false"
+            >
+              EN</button
+            ><button
+              type="button"
+              lang="pt-BR"
+              data-language="pt-BR"
+              aria-label="Português (Brasil)"
+              aria-pressed="false"
+            >
+              PT-BR
+            </button>
+          </div>
+          <label class="directory-search"
+            ><span aria-hidden="true">⌕</span
+            ><span class="sr-only" data-i18n="Search buildings">Search buildings</span
+            ><input
+              id="search"
+              type="search"
+              autocomplete="off"
+              placeholder="Search by building, number, or description"
+              data-placeholder="Search by building, number, or description"
+          /></label>
+          <div class="filters">
+            <label
+              ><span class="sr-only" data-i18n="Category">Category</span
+              ><select id="category">
+                <option value="" data-i18n="All categories">All categories</option>
+                <option value="industrial" data-i18n="Industrial">Industrial</option>
+                <option value="social" data-i18n="Social">Social</option>
+                <option value="auxiliary" data-i18n="Auxiliary">Auxiliary</option>
+                <option value="gate" data-i18n="Gate">Gate</option>
+              </select></label
+            ><label
+              ><span class="sr-only" data-i18n="Show">Show</span
+              ><select id="collection">
+                <option value="all" data-i18n="All buildings">All buildings</option>
+                <option value="favorites" data-i18n="Favorites">Favorites</option>
+                <option value="recent" data-i18n="Recent">Recent</option>
+              </select></label
+            ><span id="count" class="count"></span>
+          </div>
+        </div>
+        <div id="directory" class="directory" aria-busy="true"></div>
+        <footer class="directory-footer">
+          <div id="catalog-state" role="status" class="catalog-state">
+            <span data-i18n="Loading buildings…">Loading buildings…</span>
+          </div>
+          <div class="data-links">
+            <a
+              href="./data/buildings.csv"
+              download="buildings.csv"
+              data-i18n="Download building CSV"
+              >Download building CSV</a
+            ><button id="refresh" class="text-button" data-i18n="Refresh data">Refresh data</button>
+          </div>
+        </footer>
+      </dialog>
+    </main>
+    <div id="notice" role="status" class="notice" hidden></div>
+    <noscript><p>Enable JavaScript to search the CSV directory and use the map.</p></noscript>
+    <script type="module" src="./assets/app.js"></script>
   </body>
 </html>
